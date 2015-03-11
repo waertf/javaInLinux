@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="rabbitmq-java-client-bin-3.4">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../rabbitmq-java-client-bin-3.4.2/rabbitmq-java-client-bin-3.4.2" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../../rabbitmq-java-client-bin-3.4.2/rabbitmq-java-client-bin-3.4.2" recursive="false" />
+  </library>
+</component>
