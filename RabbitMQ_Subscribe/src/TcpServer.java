@@ -46,16 +46,30 @@ public class TcpServer {
                 InputStream in = connection.getInputStream();
                 byte[] length = new byte[2];
                 in.read(length);
-                System.out.print("length[0]:");
-                System.out.print(length[0] & 0xff);
-                System.out.print("  length[1]:");
-                System.out.print(length[1] & 0xff);
-                int val = ((length[1] & 0xff) << 8) | (length[0] & 0xff);
-                byte[] data = new byte[val];
+                //System.out.print("length[0]:");
+                //System.out.print(length[0] & 0xff);
+                //System.out.print("  length[1]:");
+                //System.out.print(length[1] & 0xff);
+                int dataLength = ((length[1] & 0xff) << 8) | (length[0] & 0xff);
+                byte[] data = new byte[dataLength];
                 in.read(data);
-                System.out.print("  val:");
-                System.out.print(val);
-                System.out.print("\n");
+                StringBuilder sb = new StringBuilder();
+                for(int i=0;i<data.length;i++)
+                {
+
+                }
+                /*
+                System.out.print("uid:");
+                for(int i=0;i<8;i++)
+                {
+                    System.out.print(data[i]);
+                    System.out.print("  ");
+                }
+                System.out.println();
+                */
+                //System.out.print("  val:");
+                //System.out.print(val);
+                //System.out.print("\n");
             } catch (IOException ex) {
                 System. err. println(ex);
             } finally {
