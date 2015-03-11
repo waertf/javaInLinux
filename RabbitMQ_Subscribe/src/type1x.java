@@ -6,4 +6,18 @@ public class type1x {
     public String uid;
     public String status;
     public String totalGoDistance;
+    public String timeNow;
+    public String lon;
+    public String lat;
+
+    public String engineCoolantTemperature,
+            fuelPressure,
+            intakeManifoldPressure,
+            RPMHigh,
+            RPMLow,
+            vehicleSpeed,
+            intakeAirTemperature,
+            airFlowRate,
+            throttlePosition,
+            batteryVoltage;
 }
