@@ -11,6 +11,11 @@ import java.util.concurrent.*;
 
 public class TcpServer {
     public final static int PORT = 13;
+
+    public final static int UID_LENGTH=8;
+    public final static int STATUS_LENGTH=1;
+    public final static int TOTAL_DISTANCE_LENGTH=6;
+
     public static void main(String[] args) {
         ExecutorService pool = Executors.newFixedThreadPool(1000);
         try  {
@@ -54,9 +59,17 @@ public class TcpServer {
                 byte[] data = new byte[dataLength];
                 in.read(data);
                 StringBuilder sb = new StringBuilder();
+                StringBuilder uid = new StringBuilder();
+                String status;
+                StringBuilder totalGoDistance=new StringBuilder();
                 for(int i=0;i<data.length;i++)
                 {
-
+                    if(i<UID_LENGTH)
+                        uid.append((char)data[i]);
+                    if(UID_LENGTH<=i&&i<(UID_LENGTH+STATUS_LENGTH))
+                        status=String.valueOf((char)data[i]);
+                    if((UID_LENGTH+STATUS_LENGTH)<=i && i<(UID_LENGTH+STATUS_LENGTH+TOTAL_DISTANCE_LENGTH))
+                        totalGoDistance.append((char)data[i]);
                 }
                 /*
                 System.out.print("uid:");
