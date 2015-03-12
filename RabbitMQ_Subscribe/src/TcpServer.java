@@ -108,9 +108,21 @@ public class TcpServer {
                     }
                     pointer+=TOTAL_DISTANCE_LENGTH;
 
+                    byte[] timeBytes=new byte[TIME_LENGTH];
                     for(int j=pointer;j<pointer+TIME_LENGTH;j++)
                     {
-                        ;
+                        timeBytes[j-pointer]=data[j];
+                    }
+                    for(byte a:timeBytes)
+                    {
+                        System.out.print(a);
+                        System.out.print("  ");
+                    }
+                    boolean[] timeBools=byteArray2BitArray(timeBytes);
+                    for(boolean a:timeBools)
+                    {
+                        System.out.print(a);
+                        System.out.print("  ");
                     }
                     pointer+=TIME_LENGTH;
                 }
