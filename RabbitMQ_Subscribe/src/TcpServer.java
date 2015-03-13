@@ -298,7 +298,9 @@ public class TcpServer {
                             //do nothing
                             break;
                     }
+                    System.out.println("uid="+uid.toString());
                     time.setLength(0);
+                    uid.setLength(0);
                     if(pointer>dataLength)
                         break;
                 }
