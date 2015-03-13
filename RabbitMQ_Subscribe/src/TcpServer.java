@@ -85,6 +85,7 @@ public class TcpServer {
                 StringBuilder sb = new StringBuilder();
                 StringBuilder uid = new StringBuilder();
                 String status = null;
+                String DTC = null;
                 int myStatus;
                 StringBuilder totalGoDistance=new StringBuilder();
                 StringBuilder time=new StringBuilder();
@@ -218,7 +219,7 @@ public class TcpServer {
                         case 11:
                         case 12:
                         case 13:
-                            int engineCoolantTemperature=(data[pointer]&0xff)*100/255;
+                            double engineCoolantTemperature=(data[pointer]&0xff)*100/255;
                             pointer++;
                             int fuelPressure=(data[pointer]&0xff)*3;
                             pointer++;
@@ -232,11 +233,40 @@ public class TcpServer {
                             pointer++;
                             int airFlowRate=(data[pointer]&0xff);
                             pointer++;
-                            int throttlePosition=(data[pointer]&0xff)*100/255;
+                            double throttlePosition=(data[pointer]&0xff)*100/255;
                             pointer++;
-                            int batteryVoltage=(data[pointer]&0xff)/10;
+                            double batteryVoltage=(data[pointer]&0xff)/10;
                             break;
                         case 20:
+                            byte[] error = new byte[10];
+                            for (int i = 0; i < 10; i++)
+                                error[i] = data[pointer++];
+                            StringBuffer stringBuffer = new StringBuffer();
+                            for (int i = 0; i < 10; i += 2) {
+                                byte first, second;
+                                String header;
+                                first = error[i];
+                                second = error[i + 1];
+                                                /*if(first+second!=0)*/
+                                {
+                                    if (first >> 6 == 0)
+                                        header = "DTC" + (i / 2 + 1) + ":P";
+                                    else if (first >> 6 == 1)
+                                        header = "DTC" + (i / 2 + 1) + ":C";
+                                    else if (first >> 6 == -1)
+                                        header = "DTC" + (i / 2 + 1) + ":U";
+                                    else
+                                        header = "DTC" + (i / 2 + 1) + ":B";
+                                    stringBuffer.append(header +
+                                            toHexChar(15 & (first & 63) >> 4) + toHexChar(first & 15) + toHexChar(15 & second >> 4) + toHexChar(second & 15) + ",");
+                                    //stringBuilderHttpPost.append(DTC);
+                                }
+                            }
+                            if (DTC != null && stringBuffer.length() > 0)
+                                DTC = stringBuffer.toString();
+                            else
+                                DTC = "DTC1:P0000,DTC2:P0000,DTC3:P0000,DTC4:P0000,DTC5:P0000,";
+                            //stringBuilderHttpPost.append("ID:"+GetBT6000sBTName+",");
                             break;
                         case 30:
                             break;
@@ -298,6 +328,10 @@ public class TcpServer {
                     bits[i] = true;
             }
             return bits;
+        }
+
+        char toHexChar(int input) {
+            return input >= 0 && input <= 9?(char)(input + 48):(char)(65 + (input - 10));
         }
     }
 }
