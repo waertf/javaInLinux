@@ -24,6 +24,7 @@ public class TcpServer {
     public final static byte SECOND_LENGTH=6;
     public final static byte LONG_LENGTH=3;
     public final static byte LAT_LENGTH=3;
+    public final static byte VIDEO_FILENAME_LENGTH=20;
 
     public static void main(String[] args) {
 
@@ -83,12 +84,13 @@ public class TcpServer {
                 System.out.println();
                 StringBuilder sb = new StringBuilder();
                 StringBuilder uid = new StringBuilder();
-                String status;
+                String status = null;
                 int myStatus;
                 StringBuilder totalGoDistance=new StringBuilder();
                 StringBuilder time=new StringBuilder();
                 StringBuilder mylong = new StringBuilder();
                 StringBuilder myLat = new StringBuilder();
+                StringBuilder fileName = new StringBuilder();
                 /*
                 for(int i=0;i<data.length;i++)
                 {
@@ -210,6 +212,30 @@ public class TcpServer {
                     pointer+=LONG_LENGTH;
                     myLat.append(String.valueOf((data[pointer]&0xff)+(data[pointer+1]&0xff)/60+(data[pointer+2]&0xff)/3600));
                     pointer+=LAT_LENGTH;
+                    switch (Integer.valueOf(status))
+                    {
+                        case 10:
+                        case 11:
+                        case 12:
+                        case 13:
+                            break;
+                        case 20:
+                            break;
+                        case 30:
+                            break;
+                        case 41:
+                        case 42:
+                            for(int j=pointer;j<pointer+VIDEO_FILENAME_LENGTH;j++)
+                            {
+                                fileName.append((char)data[j]);
+                            }
+                            break;
+                        case 51:
+                        case 52:
+                        case 53:
+                            //do nothing
+                            break;
+                    }
                 }
                 /*
                 System.out.print("uid:");
