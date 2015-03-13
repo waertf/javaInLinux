@@ -218,6 +218,23 @@ public class TcpServer {
                         case 11:
                         case 12:
                         case 13:
+                            int engineCoolantTemperature=(data[pointer]&0xff)*100/255;
+                            pointer++;
+                            int fuelPressure=(data[pointer]&0xff)*3;
+                            pointer++;
+                            int intakeManifoldPressure=data[pointer]&0xff;
+                            pointer++;
+                            int RPM=(data[pointer]&0xff)<<8+(data[pointer+1]&0xff);
+                            pointer+=2;
+                            int vehicleSpeed=(data[pointer]&0xff);
+                            pointer++;
+                            int intakeAirTemperature=(data[pointer]&0xff)-40;
+                            pointer++;
+                            int airFlowRate=(data[pointer]&0xff);
+                            pointer++;
+                            int throttlePosition=(data[pointer]&0xff)*100/255;
+                            pointer++;
+                            int batteryVoltage=(data[pointer]&0xff)/10;
                             break;
                         case 20:
                             break;
