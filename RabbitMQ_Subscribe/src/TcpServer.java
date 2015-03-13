@@ -269,6 +269,15 @@ public class TcpServer {
                             //stringBuilderHttpPost.append("ID:"+GetBT6000sBTName+",");
                             break;
                         case 30:
+                            int RFTT=(data[pointer++]&0xff);
+                            int RFTP=(data[pointer++]&0xff);
+                            int LFTT=(data[pointer++]&0xff);
+                            int LFTP=(data[pointer++]&0xff);
+
+                            int RRTT=(data[pointer++]&0xff);
+                            int RRTP=(data[pointer++]&0xff);
+                            int LRTT=(data[pointer++]&0xff);
+                            int LRTP=(data[pointer++]&0xff);
                             break;
                         case 41:
                         case 42:
