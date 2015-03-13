@@ -12,10 +12,16 @@ import java.util.concurrent.*;
 public class TcpServer {
     public final static int PORT = 13;
 
-    public final static int UID_LENGTH=8;
-    public final static int STATUS_LENGTH=1;
-    public final static int TOTAL_DISTANCE_LENGTH=6;
-    public final static int TIME_LENGTH=4;
+    public final static byte UID_LENGTH=8;
+    public final static byte STATUS_LENGTH=1;
+    public final static byte TOTAL_DISTANCE_LENGTH=6;
+    public final static byte TIME_LENGTH=4;
+    public final static byte YEAR_LENGTH=6;
+    public final static byte MONTH_LENGTH=4;
+    public final static byte DAY_LENGTH=5;
+    public final static byte HOUR_LENGTH=5;
+    public final static byte MINUTE_LENGTH=6;
+    public final static byte SECOND_LENGTH=6;
 
     public static void main(String[] args) {
 
@@ -65,6 +71,14 @@ public class TcpServer {
                 int pointer=0;
                 byte[] data = new byte[dataLength];
                 in.read(data);
+                System.out.println("dataLength:"+String.valueOf(dataLength));
+                System.out.println("data:  ");
+                for (byte n:data)
+                {
+                    System.out.print(n);
+                    System.out.print("   ");
+                }
+                System.out.println();
                 StringBuilder sb = new StringBuilder();
                 StringBuilder uid = new StringBuilder();
                 String status;
@@ -118,13 +132,67 @@ public class TcpServer {
                         System.out.print(a);
                         System.out.print("  ");
                     }
-                    boolean[] timeBools=byteArray2BitArray(timeBytes);
-                    for(boolean a:timeBools)
+                    //boolean[] timeBools=byteArray2BitArray(timeBytes);
+                    BitSet bitSet=BitSet.valueOf(timeBytes);
+                    System.out.println("Bitset1:" + bitSet);
+                    //for(boolean a:timeBools)
+                    //{
+                    //    System.out.print(a);
+                    //    System.out.print("  ");
+                    //}
+                    short yy=0,MM=0,dd=0,HH=0,mm=0,ss=0;
+                    int timeBaseLoc=pointer;
+                    for (int i=pointer;i<pointer+YEAR_LENGTH;i++)
                     {
-                        System.out.print(a);
-                        System.out.print("  ");
+                            if(bitSet.get(i-timeBaseLoc))
+                                yy |= (1 << i-pointer);
                     }
-                    pointer+=TIME_LENGTH;
+                    pointer+=YEAR_LENGTH;
+
+                    for (int i=pointer;i<pointer+MONTH_LENGTH;i++)
+                    {
+                        if(bitSet.get(i-timeBaseLoc))
+                            MM |= (1 << i-pointer);
+                    }
+                    pointer+=MONTH_LENGTH;
+
+                    for (int i=pointer;i<pointer+DAY_LENGTH;i++)
+                    {
+                        if(bitSet.get(i-timeBaseLoc))
+                            dd |= (1 << i-pointer);
+                    }
+                    pointer+=DAY_LENGTH;
+
+                    for (int i=pointer;i<pointer+HOUR_LENGTH;i++)
+                    {
+                        if(bitSet.get(i-timeBaseLoc))
+                            HH |= (1 << i-pointer);
+                    }
+                    pointer+=HOUR_LENGTH;
+
+                    for (int i=pointer;i<pointer+MINUTE_LENGTH;i++)
+                    {
+                        if(bitSet.get(i-timeBaseLoc))
+                            mm |= (1 << i-pointer);
+                    }
+                    pointer+=MINUTE_LENGTH;
+
+                    for (int i=pointer;i<pointer+SECOND_LENGTH;i++)
+                    {
+                        if(bitSet.get(i-timeBaseLoc))
+                            ss |= (1 << i-pointer);
+                    }
+                    pointer+=SECOND_LENGTH;
+
+                    System.out.println();
+                    System.out.print("time: ");
+                    System.out.println(yy);
+                    System.out.println(MM);
+                    System.out.println(dd);
+                    System.out.println(HH);
+                    System.out.println(mm);
+                    System.out.println(ss);
+                    System.out.println();
                 }
                 /*
                 System.out.print("uid:");
