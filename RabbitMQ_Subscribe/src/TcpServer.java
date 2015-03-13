@@ -74,6 +74,7 @@ public class TcpServer {
                 int pointer=0;
                 byte[] data = new byte[dataLength];
                 in.read(data);
+
                 System.out.println("dataLength:"+String.valueOf(dataLength));
                 System.out.println("data:  ");
                 for (byte n:data)
@@ -81,6 +82,7 @@ public class TcpServer {
                     System.out.print(n);
                     System.out.print("   ");
                 }
+                System.out.println("******************************************");
                 System.out.println();
                 StringBuilder sb = new StringBuilder();
                 StringBuilder uid = new StringBuilder();
@@ -112,6 +114,7 @@ public class TcpServer {
                 */
                 while (true)
                 {
+                    System.out.println("pointer="+pointer);
                     for(int j=pointer;j<pointer+UID_LENGTH;j++)
                     {
                         uid.append((char)data[j]);
@@ -209,6 +212,7 @@ public class TcpServer {
                     System.out.println(ss);
                     System.out.println();
                     */
+                    pointer=timeBaseLoc+4;
                     mylong.append(String.valueOf((data[pointer]&0xff)+(data[pointer+1]&0xff)/60+(data[pointer+2]&0xff)/3600));
                     pointer+=LONG_LENGTH;
                     myLat.append(String.valueOf((data[pointer]&0xff)+(data[pointer+1]&0xff)/60+(data[pointer+2]&0xff)/3600));
@@ -236,6 +240,7 @@ public class TcpServer {
                             double throttlePosition=(data[pointer]&0xff)*100/255;
                             pointer++;
                             double batteryVoltage=(data[pointer]&0xff)/10;
+                            pointer++;
                             break;
                         case 20:
                             byte[] error = new byte[10];
@@ -285,6 +290,7 @@ public class TcpServer {
                             {
                                 fileName.append((char)data[j]);
                             }
+                            pointer+=VIDEO_FILENAME_LENGTH;
                             break;
                         case 51:
                         case 52:
@@ -292,6 +298,9 @@ public class TcpServer {
                             //do nothing
                             break;
                     }
+                    time.setLength(0);
+                    if(pointer>dataLength)
+                        break;
                 }
                 /*
                 System.out.print("uid:");
