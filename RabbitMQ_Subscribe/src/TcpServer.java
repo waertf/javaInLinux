@@ -298,9 +298,13 @@ public class TcpServer {
                             //do nothing
                             break;
                     }
-                    System.out.println("uid="+uid.toString());
+                    System.out.println("fileName=" + fileName.toString());
                     time.setLength(0);
                     uid.setLength(0);
+                    totalGoDistance.setLength(0);
+                    mylong.setLength(0);
+                    myLat.setLength(0);
+                    fileName.setLength(0);
                     if(pointer>dataLength)
                         break;
                 }
