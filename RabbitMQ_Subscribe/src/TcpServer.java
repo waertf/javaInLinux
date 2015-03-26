@@ -26,12 +26,14 @@ public class TcpServer {
     public final static byte LAT_LENGTH=3;
     public final static byte VIDEO_FILENAME_LENGTH=20;
 
+    public static String ReceiveMsg;
+
     public static void main(String[] args) {
 
         BitSet bitset1 = BitSet.valueOf(new byte[]{1,2,3});
 
         // print the sets
-        System.out.println("Bitset1:" + bitset1);
+        //System.out.println("Bitset1:" + bitset1);
         ExecutorService pool = Executors.newFixedThreadPool(1000);
         try  {
             ServerSocket server = new ServerSocket(PORT);
@@ -75,15 +77,15 @@ public class TcpServer {
                 byte[] data = new byte[dataLength];
                 in.read(data);
 
-                System.out.println("dataLength:"+String.valueOf(dataLength));
-                System.out.println("data:  ");
-                for (byte n:data)
-                {
-                    System.out.print(n);
-                    System.out.print("   ");
-                }
-                System.out.println("******************************************");
-                System.out.println();
+                //System.out.println("dataLength:"+String.valueOf(dataLength));
+                //System.out.println("data:  ");
+                //for (byte n:data)
+                //{
+                //    System.out.print(n);
+                //    System.out.print("   ");
+                //}
+                //System.out.println("******************************************");
+                //System.out.println();
                 StringBuilder sb = new StringBuilder();
                 StringBuilder uid = new StringBuilder();
                 String status = null;
@@ -114,23 +116,26 @@ public class TcpServer {
                 */
                 while (true)
                 {
-                    System.out.println("pointer="+pointer);
+                    //System.out.println("pointer=" + pointer);
                     for(int j=pointer;j<pointer+UID_LENGTH;j++)
                     {
                         uid.append((char)data[j]);
                     }
+                    sb.append(uid.toString()).append(",");
                     pointer+=UID_LENGTH;
 
                     for(int j=pointer;j<pointer+STATUS_LENGTH;j++)
                     {
                         status = String.valueOf(data[j]);
                     }
+                    sb.append(status.toString()).append(",");
                     pointer+=STATUS_LENGTH;
 
                     for(int j=pointer;j<pointer+TOTAL_DISTANCE_LENGTH;j++)
                     {
                         totalGoDistance.append((char)data[j]);
                     }
+                    sb.append(totalGoDistance.toString()).append(",");
                     pointer+=TOTAL_DISTANCE_LENGTH;
 
                     byte[] timeBytes=new byte[TIME_LENGTH];
@@ -138,14 +143,14 @@ public class TcpServer {
                     {
                         timeBytes[j-pointer]=data[j];
                     }
-                    for(byte a:timeBytes)
-                    {
-                        System.out.print(a);
-                        System.out.print("  ");
-                    }
+                    //for(byte a:timeBytes)
+                    //{
+                    //    System.out.print(a);
+                    //    System.out.print("  ");
+                    //}
                     //boolean[] timeBools=byteArray2BitArray(timeBytes);
                     BitSet bitSet=BitSet.valueOf(timeBytes);
-                    System.out.println("Bitset1:" + bitSet);
+                    //System.out.println("Bitset1:" + bitSet);
                     //for(boolean a:timeBools)
                     //{
                     //    System.out.print(a);
@@ -158,7 +163,7 @@ public class TcpServer {
                             if(bitSet.get(i-timeBaseLoc))
                                 yy |= (1 << i-pointer);
                     }
-                    time.append("20"+String.valueOf(yy));
+                    time.append("20" + String.valueOf(yy));
                     pointer+=YEAR_LENGTH;
 
                     for (int i=pointer;i<pointer+MONTH_LENGTH;i++)
@@ -199,8 +204,9 @@ public class TcpServer {
                             ss |= (1 << i-pointer);
                     }
                     time.append(String.valueOf(ss));
+                    sb.append(time.toString()).append(",");
                     pointer+=SECOND_LENGTH;
-                    System.out.println(time.toString());
+                    //System.out.println(time.toString());
                     /*
                     System.out.println();
                     System.out.print("time: ");
@@ -213,9 +219,14 @@ public class TcpServer {
                     System.out.println();
                     */
                     pointer=timeBaseLoc+4;
-                    mylong.append(String.valueOf((data[pointer]&0xff)+(data[pointer+1]&0xff)/60+(data[pointer+2]&0xff)/3600));
+                    mylong.append(String.valueOf((data[pointer] & 0xff) + (data[pointer + 1] & 0xff) / 60 + (data[pointer + 2] & 0xff) / 3600));
+                    sb.append(mylong.toString()).append(",");
                     pointer+=LONG_LENGTH;
-                    myLat.append(String.valueOf((data[pointer]&0xff)+(data[pointer+1]&0xff)/60+(data[pointer+2]&0xff)/3600));
+                    myLat.append(String.valueOf((data[pointer] & 0xff) + (data[pointer + 1] & 0xff) / 60 + (data[pointer + 2] & 0xff) / 3600));
+                    if(Integer.valueOf(status)<50)
+                        sb.append(myLat.toString()).append(",");
+                    else
+                        sb.append(myLat.toString());
                     pointer+=LAT_LENGTH;
                     switch (Integer.valueOf(status))
                     {
@@ -241,6 +252,16 @@ public class TcpServer {
                             pointer++;
                             double batteryVoltage=(data[pointer]&0xff)/10;
                             pointer++;
+
+                            sb.append(String.valueOf(engineCoolantTemperature)).append(",");
+                            sb.append(String.valueOf(fuelPressure)).append(",");
+                            sb.append(String.valueOf(intakeManifoldPressure)).append(",");
+                            sb.append(String.valueOf(RPM)).append(",");
+                            sb.append(String.valueOf(vehicleSpeed)).append(",");
+                            sb.append(String.valueOf(intakeAirTemperature)).append(",");
+                            sb.append(String.valueOf(airFlowRate)).append(",");
+                            sb.append(String.valueOf(throttlePosition)).append(",");
+                            sb.append(String.valueOf(batteryVoltage));
                             break;
                         case 20:
                             byte[] error = new byte[10];
@@ -263,15 +284,16 @@ public class TcpServer {
                                     else
                                         header = "DTC" + (i / 2 + 1) + ":B";
                                     stringBuffer.append(header +
-                                            toHexChar(15 & (first & 63) >> 4) + toHexChar(first & 15) + toHexChar(15 & second >> 4) + toHexChar(second & 15) + ",");
+                                            toHexChar(15 & (first & 63) >> 4) + toHexChar(first & 15) + toHexChar(15 & second >> 4) + toHexChar(second & 15) + "#");
                                     //stringBuilderHttpPost.append(DTC);
                                 }
                             }
                             if (DTC != null && stringBuffer.length() > 0)
                                 DTC = stringBuffer.toString();
                             else
-                                DTC = "DTC1:P0000,DTC2:P0000,DTC3:P0000,DTC4:P0000,DTC5:P0000,";
+                                DTC = "DTC1:P0000#DTC2:P0000#DTC3:P0000#DTC4:P0000#DTC5:P0000#";
                             //stringBuilderHttpPost.append("ID:"+GetBT6000sBTName+",");
+                            sb.append(DTC);
                             break;
                         case 30:
                             int RFTT=(data[pointer++]&0xff);
@@ -283,6 +305,16 @@ public class TcpServer {
                             int RRTP=(data[pointer++]&0xff);
                             int LRTT=(data[pointer++]&0xff);
                             int LRTP=(data[pointer++]&0xff);
+
+                            sb.append(String.valueOf(RFTT)).append(",");
+                            sb.append(String.valueOf(RFTP)).append(",");
+                            sb.append(String.valueOf(LFTT)).append(",");
+                            sb.append(String.valueOf(LFTP)).append(",");
+
+                            sb.append(String.valueOf(RRTT)).append(",");
+                            sb.append(String.valueOf(RRTP)).append(",");
+                            sb.append(String.valueOf(LRTT)).append(",");
+                            sb.append(String.valueOf(LRTP));
                             break;
                         case 41:
                         case 42:
@@ -290,6 +322,7 @@ public class TcpServer {
                             {
                                 fileName.append((char)data[j]);
                             }
+                            sb.append(fileName.toString());
                             pointer+=VIDEO_FILENAME_LENGTH;
                             break;
                         case 51:
@@ -298,15 +331,20 @@ public class TcpServer {
                             //do nothing
                             break;
                     }
-                    System.out.println("fileName=" + fileName.toString());
+                    //System.out.println("fileName=" + fileName.toString());
                     time.setLength(0);
                     uid.setLength(0);
                     totalGoDistance.setLength(0);
                     mylong.setLength(0);
                     myLat.setLength(0);
                     fileName.setLength(0);
-                    if(pointer>dataLength)
+                    sb.append(System.getProperty("line.separator"));
+                    if(pointer>=dataLength) {
+                        ReceiveMsg=sb.toString();
+                        System.out.println(ReceiveMsg);
+                        sb.setLength(0);
                         break;
+                    }
                 }
                 /*
                 System.out.print("uid:");
