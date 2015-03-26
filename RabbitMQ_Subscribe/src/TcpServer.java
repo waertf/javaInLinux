@@ -284,16 +284,17 @@ public class TcpServer {
                                     else
                                         header = "DTC" + (i / 2 + 1) + ":B";
                                     stringBuffer.append(header +
-                                            toHexChar(15 & (first & 63) >> 4) + toHexChar(first & 15) + toHexChar(15 & second >> 4) + toHexChar(second & 15) + "#");
+                                            toHexChar(15 & (first & 63) >> 4) + toHexChar(first & 15) + toHexChar(15 & second >> 4) + toHexChar(second & 15) + ",");
                                     //stringBuilderHttpPost.append(DTC);
                                 }
                             }
                             if (DTC != null && stringBuffer.length() > 0)
                                 DTC = stringBuffer.toString();
                             else
-                                DTC = "DTC1:P0000#DTC2:P0000#DTC3:P0000#DTC4:P0000#DTC5:P0000#";
+                                DTC = "DTC1:P0000,DTC2:P0000,DTC3:P0000,DTC4:P0000,DTC5:P0000,";
                             //stringBuilderHttpPost.append("ID:"+GetBT6000sBTName+",");
                             sb.append(DTC);
+                            sb.setLength(sb.length()-1);
                             break;
                         case 30:
                             int RFTT=(data[pointer++]&0xff);
