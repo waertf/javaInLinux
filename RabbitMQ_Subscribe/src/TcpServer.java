@@ -339,13 +339,32 @@ public class TcpServer {
                     mylong.setLength(0);
                     myLat.setLength(0);
                     fileName.setLength(0);
-                    sb.append(System.getProperty("line.separator"));
+                    //sb.append(System.getProperty("line.separator"));
+                    sb.append("#");
                     if(pointer>=dataLength) {
                         ReceiveMsg=sb.toString();
 
-                        Runnable r2 = () -> {
+                        Runnable SendToWeb = () -> {
                             try {
-                                runExternalProcess(ReceiveMsg);
+                                runExternalProcess(""+" "+ReceiveMsg);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        };
+                        Runnable WriteToDB = () -> {
+                            try {
+                                runExternalProcess(""+" "+ReceiveMsg);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        };
+                        Runnable CheckPowerOffEvent = () -> {
+                            try {
+                                runExternalProcess(""+" "+ReceiveMsg);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             } catch (InterruptedException e) {
@@ -353,7 +372,9 @@ public class TcpServer {
                             }
                         };
 
-                        new Thread(r2).start();
+                        //new Thread(SendToWeb).start();
+                        //new Thread(WriteToDB).start();
+                        //new Thread(CheckPowerOffEvent).start();
                         
                         System.out.println(ReceiveMsg);
                         sb.setLength(0);
