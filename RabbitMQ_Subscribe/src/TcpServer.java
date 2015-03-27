@@ -55,7 +55,7 @@ public class TcpServer {
             this. connection = connection;
         }
         @Override
-        public Void call() {
+        public Void call() throws InterruptedException {
             try {
                 /*
                 DataInputStream in = new DataInputStream(connection.getInputStream());
@@ -342,6 +342,19 @@ public class TcpServer {
                     sb.append(System.getProperty("line.separator"));
                     if(pointer>=dataLength) {
                         ReceiveMsg=sb.toString();
+
+                        Runnable r2 = () -> {
+                            try {
+                                runExternalProcess(ReceiveMsg);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        };
+
+                        new Thread(r2).start();
+                        
                         System.out.println(ReceiveMsg);
                         sb.setLength(0);
                         break;
@@ -370,6 +383,23 @@ public class TcpServer {
             }
             return null;
         }
+
+        private void runExternalProcess(String command) throws IOException, InterruptedException {
+            Process proc = Runtime.getRuntime().exec(command);
+
+            // Read the output
+
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(proc.getInputStream()));
+
+            String line = "";
+            while((line = reader.readLine()) != null) {
+                System.out.print(line + "\n");
+            }
+
+            proc.waitFor();
+        }
+
         int booleansToInt(boolean[] arr){
             int n = 0;
             for (boolean b : arr)
