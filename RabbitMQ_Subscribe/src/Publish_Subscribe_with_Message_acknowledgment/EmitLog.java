@@ -15,13 +15,14 @@ import com.rabbitmq.client.MessageProperties;
 public class EmitLog {
 
     private static final String EXCHANGE_NAME = "logs";
+    private static final String IP_ADDRESS="192.168.1.45";
 
     public static void main(String[] argv)
             throws java.io.IOException {
 
         double counter=0;
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("192.168.1.45");
+        factory.setHost(IP_ADDRESS);
 
         factory.setAutomaticRecoveryEnabled(true);
         // connection that will recover automatically

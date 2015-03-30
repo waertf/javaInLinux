@@ -10,13 +10,14 @@ import com.rabbitmq.client.QueueingConsumer;
  */
 public class ReceiveLogs2 {
     private static final String EXCHANGE_NAME = "logs";
+    private static final String IP_ADDRESS="192.168.1.45";
 
     public static void main(String[] argv)
             throws java.io.IOException,
             java.lang.InterruptedException {
 
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("192.168.1.45");
+        factory.setHost(IP_ADDRESS);
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
