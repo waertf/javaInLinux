@@ -2,6 +2,10 @@
  * Created by wavegisAAA on 3/10/2015.
  */
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.MessageProperties;
 import sun.rmi.runtime.Log;
 
 import java.io.*;
@@ -26,11 +30,41 @@ public class TcpServer {
     public final static byte LAT_LENGTH=3;
     public final static byte VIDEO_FILENAME_LENGTH=20;
 
+    private static final String MQ_EXCHANGE_NAME = "logs";
+    private static final String MQ_IP_ADDRESS="127.0.0.1";
+
     public static String ReceiveMsg;
 
+    static Channel channel = null;
+    private static final String severity = "alonso";
     public static void main(String[] args) {
 
         BitSet bitset1 = BitSet.valueOf(new byte[]{1,2,3});
+
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(MQ_IP_ADDRESS);
+
+        factory.setAutomaticRecoveryEnabled(true);
+        // connection that will recover automatically
+        factory.setNetworkRecoveryInterval(10000);
+        Connection connection = null;
+        try {
+            connection = factory.newConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //Channel channel = null;
+        try {
+            channel = connection.createChannel();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            channel.exchangeDeclare(MQ_EXCHANGE_NAME, "fanout");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // print the sets
         //System.out.println("Bitset1:" + bitset1);
@@ -39,8 +73,8 @@ public class TcpServer {
             ServerSocket server = new ServerSocket(PORT);
             while (true) {
                 try {
-                    Socket connection = server. accept();
-                    Callable<Void> task = new CarMsgTask(connection);
+                    Socket connection1 = server. accept();
+                    Callable<Void> task = new CarMsgTask(connection1);
                     pool. submit(task);
                 } catch (IOException ex) {}
             }
@@ -51,6 +85,7 @@ public class TcpServer {
 
     private static class CarMsgTask implements Callable<Void> {
         private Socket connection;
+
         CarMsgTask(Socket connection) {
             this. connection = connection;
         }
@@ -344,6 +379,14 @@ public class TcpServer {
                     if(pointer>=dataLength) {
                         ReceiveMsg=sb.toString();
 
+                        Runnable WriteToMQ = () -> {
+                            try {
+                                channel.basicPublish(MQ_EXCHANGE_NAME, severity, MessageProperties.PERSISTENT_TEXT_PLAIN, ReceiveMsg.getBytes());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        };
+
                         Runnable SendToWeb = () -> {
                             try {
                                 runExternalProcess(""+" "+ReceiveMsg);
@@ -372,6 +415,7 @@ public class TcpServer {
                             }
                         };
 
+                        new Thread(WriteToMQ).start();
                         //new Thread(SendToWeb).start();
                         //new Thread(WriteToDB).start();
                         //new Thread(CheckPowerOffEvent).start();
