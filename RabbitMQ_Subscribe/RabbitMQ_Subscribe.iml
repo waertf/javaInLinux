@@ -7,7 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="rabbitmq-java-client-bin-3.4" level="project" />
     <orderEntry type="library" name="guava-18.0" level="project" />
+    <orderEntry type="library" name="rabbitmq-java-client-bin-3.5" level="project" />
   </component>
 </module>
