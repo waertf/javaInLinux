@@ -30,8 +30,8 @@ public class TcpServer {
     public final static byte LAT_LENGTH=3;
     public final static byte VIDEO_FILENAME_LENGTH=20;
 
-    private static final String MQ_EXCHANGE_NAME = "logs";
-    private static final String MQ_IP_ADDRESS="127.0.0.1";
+    private static final String MQ_EXCHANGE_NAME = "alonso.fanout.test_20150402092434";
+    private static final String MQ_IP_ADDRESS="192.168.1.133";
 
     public static String ReceiveMsg;
 
