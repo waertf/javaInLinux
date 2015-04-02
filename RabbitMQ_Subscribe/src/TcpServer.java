@@ -37,6 +37,7 @@ public class TcpServer {
 
     static Channel channel = null;
     private static final String severity = "alonso";
+    static Object mutex=new Object();
     public static void main(String[] args) {
 
         BitSet bitset1 = BitSet.valueOf(new byte[]{1,2,3});
@@ -381,7 +382,9 @@ public class TcpServer {
 
                         Runnable WriteToMQ = () -> {
                             try {
-                                channel.basicPublish(MQ_EXCHANGE_NAME, severity, MessageProperties.PERSISTENT_TEXT_PLAIN, ReceiveMsg.getBytes());
+                                synchronized (mutex) {
+                                    channel.basicPublish(MQ_EXCHANGE_NAME, severity, MessageProperties.PERSISTENT_TEXT_PLAIN, ReceiveMsg.getBytes());
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
