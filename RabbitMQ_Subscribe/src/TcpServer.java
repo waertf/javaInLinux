@@ -382,7 +382,8 @@ public class TcpServer {
 
                         Runnable WriteToMQ = () -> {
                             try {
-                                synchronized (mutex) {
+                                synchronized (mutex)
+                                {
                                     channel.basicPublish(MQ_EXCHANGE_NAME, severity, MessageProperties.PERSISTENT_TEXT_PLAIN, ReceiveMsg.getBytes());
                                 }
                             } catch (IOException e) {
@@ -423,7 +424,7 @@ public class TcpServer {
                         //new Thread(WriteToDB).start();
                         //new Thread(CheckPowerOffEvent).start();
                         
-                        System.out.println(ReceiveMsg);
+                        //System.out.println(ReceiveMsg);
                         sb.setLength(0);
                         break;
                     }
