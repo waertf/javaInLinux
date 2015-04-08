@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class TcpServer {
-    public final static int PORT = 13;
+    public final static int PORT = 2999;
 
     public final static byte UID_LENGTH=8;
     public final static byte STATUS_LENGTH=1;
@@ -69,7 +69,7 @@ public class TcpServer {
 
         // print the sets
         //System.out.println("Bitset1:" + bitset1);
-        ExecutorService pool = Executors.newFixedThreadPool(1000);
+        ExecutorService pool = Executors.newFixedThreadPool(20000);
         try  {
             ServerSocket server = new ServerSocket(PORT);
             while (true) {
@@ -255,10 +255,14 @@ public class TcpServer {
                     System.out.println();
                     */
                     pointer=timeBaseLoc+4;
-                    mylong.append(String.valueOf((data[pointer] & 0xff) + (data[pointer + 1] & 0xff) / 60 + (data[pointer + 2] & 0xff) / 3600));
+                    double myDlong,myDlat;
+                    myDlong=(data[pointer] & 0xff) + (data[pointer + 1] & 0xff) / 60 + (data[pointer + 2] & 0xff) / 3600;
+                    mylong.append(String.valueOf(myDlong));
                     sb.append(mylong.toString()).append(",");
                     pointer+=LONG_LENGTH;
-                    myLat.append(String.valueOf((data[pointer] & 0xff) + (data[pointer + 1] & 0xff) / 60 + (data[pointer + 2] & 0xff) / 3600));
+
+                    myDlat=(data[pointer] & 0xff) + (data[pointer + 1] & 0xff) / 60 + (data[pointer + 2] & 0xff) / 3600;
+                    myLat.append(String.valueOf(myDlat));
                     if(Integer.valueOf(status)<50)
                         sb.append(myLat.toString()).append(",");
                     else
