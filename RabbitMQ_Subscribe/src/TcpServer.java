@@ -382,6 +382,7 @@ public class TcpServer {
                     //sb.append(System.getProperty("line.separator"));
                     sb.append("#");
                     if(pointer>=dataLength) {
+                        sb.append(System.getProperty("line.separator"));
                         ReceiveMsg=sb.toString();
 
                         Runnable WriteToMQ = () -> {
