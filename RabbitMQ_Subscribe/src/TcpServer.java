@@ -380,7 +380,7 @@ public class TcpServer {
                     myLat.setLength(0);
                     fileName.setLength(0);
                     //sb.append(System.getProperty("line.separator"));
-                    sb.append("#");
+                    sb.append(";");
                     if(pointer>=dataLength) {
                         sb.append(System.getProperty("line.separator"));
                         ReceiveMsg=sb.toString();
