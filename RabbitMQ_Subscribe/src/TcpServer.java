@@ -429,7 +429,7 @@ public class TcpServer {
                         //new Thread(WriteToDB).start();
                         //new Thread(CheckPowerOffEvent).start();
                         
-                        //System.out.println(ReceiveMsg);
+                        System.out.println(ReceiveMsg);
                         sb.setLength(0);
                         break;
                     }
