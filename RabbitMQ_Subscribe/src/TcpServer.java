@@ -292,6 +292,8 @@ public class TcpServer {
                             pointer++;
                             double batteryVoltage=(data[pointer]&0xff)/10;
                             pointer++;
+                            double InstantFuel=(data[pointer]&0xff);
+                            pointer++;
 
                             sb.append(String.valueOf(engineCoolantTemperature)).append(",");
                             sb.append(String.valueOf(fuelPressure)).append(",");
@@ -302,6 +304,7 @@ public class TcpServer {
                             sb.append(String.valueOf(airFlowRate)).append(",");
                             sb.append(String.valueOf(throttlePosition)).append(",");
                             sb.append(String.valueOf(batteryVoltage));
+                            sb.append(String.valueOf(InstantFuel));
                             break;
                         case 20:
                             byte[] error = new byte[10];
@@ -359,6 +362,7 @@ public class TcpServer {
                             break;
                         case 41:
                         case 42:
+                        case 43:
                             for(int j=pointer;j<pointer+VIDEO_FILENAME_LENGTH;j++)
                             {
                                 fileName.append((char)data[j]);
