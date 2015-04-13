@@ -428,7 +428,7 @@ public class TcpServer {
                             }
                         };
 
-                        //new Thread(WriteToMQ).start();
+                        new Thread(WriteToMQ).start();
                         //new Thread(SendToWeb).start();
                         //new Thread(WriteToDB).start();
                         //new Thread(CheckPowerOffEvent).start();
