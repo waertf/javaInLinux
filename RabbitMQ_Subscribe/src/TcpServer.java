@@ -280,7 +280,7 @@ public class TcpServer {
                             pointer++;
                             int intakeManifoldPressure=data[pointer]&0xff;
                             pointer++;
-                            int RPM=(data[pointer]&0xff)<<8+(data[pointer+1]&0xff);
+                            int RPM=(data[pointer]&0xff)*256+(data[pointer+1]&0xff);
                             pointer+=2;
                             int vehicleSpeed=(data[pointer]&0xff);
                             pointer++;
