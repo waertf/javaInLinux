@@ -387,13 +387,31 @@ public class TcpServer {
                     sb.append(";");
                     if(pointer>=dataLength) {
                         sb.append(System.getProperty("line.separator"));
-                        ReceiveMsg=sb.toString();
 
+                        String MQDataSend=null;
+                        ReceiveMsg=sb.toString();
+                        //System.out.println(ReceiveMsg);
+
+                        String[] mysplit=ReceiveMsg.replace(System.getProperty("line.separator"),"").split(";");
+                        for(int i=mysplit.length-1;i>=0;i--)
+                        {
+                            String[] myrow= mysplit[i].split(",");
+                            if(myrow.length>1)
+                            if(myrow[1].compareTo("11")==0)
+                            {
+                                MQDataSend=mysplit[i];
+                                System.out.println(MQDataSend);
+                                break;
+                            }
+                        }
+                        final String finalMQDataSend = MQDataSend;
                         Runnable WriteToMQ = () -> {
                             try {
                                 synchronized (mutex)
                                 {
-                                    channel.basicPublish(MQ_EXCHANGE_NAME, severity, MessageProperties.PERSISTENT_TEXT_PLAIN, ReceiveMsg.getBytes());
+                                    //channel.basicPublish(MQ_EXCHANGE_NAME, severity, MessageProperties.PERSISTENT_TEXT_PLAIN, ReceiveMsg.getBytes());
+                                    if(finalMQDataSend !=null)
+                                    channel.basicPublish(MQ_EXCHANGE_NAME, severity, MessageProperties.PERSISTENT_TEXT_PLAIN, finalMQDataSend.getBytes());
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -433,7 +451,7 @@ public class TcpServer {
                         //new Thread(WriteToDB).start();
                         //new Thread(CheckPowerOffEvent).start();
                         
-                        System.out.println(ReceiveMsg);
+                        //System.out.println(ReceiveMsg);
                         sb.setLength(0);
                         break;
                     }
