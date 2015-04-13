@@ -302,9 +302,8 @@ public class TcpServer {
                             sb.append(String.valueOf(vehicleSpeed)).append(",");
                             sb.append(String.valueOf(intakeAirTemperature)).append(",");
                             sb.append(String.valueOf(airFlowRate)).append(",");
-                            sb.append(String.valueOf(throttlePosition)).append(",");
-                            sb.append(String.valueOf(batteryVoltage));
-                            sb.append(String.valueOf(throttlePosition)).append(",");
+                            sb.append(String.valueOf(throttlePosition)).append(",");;
+                            sb.append(String.valueOf(batteryVoltage)).append(",");
                             sb.append(String.valueOf(InstantFuel));
                             break;
                         case 20:
