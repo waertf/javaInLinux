@@ -304,6 +304,7 @@ public class TcpServer {
                             sb.append(String.valueOf(airFlowRate)).append(",");
                             sb.append(String.valueOf(throttlePosition)).append(",");
                             sb.append(String.valueOf(batteryVoltage));
+                            sb.append(String.valueOf(throttlePosition)).append(",");
                             sb.append(String.valueOf(InstantFuel));
                             break;
                         case 20:
@@ -428,7 +429,7 @@ public class TcpServer {
                             }
                         };
 
-                        new Thread(WriteToMQ).start();
+                        //new Thread(WriteToMQ).start();
                         //new Thread(SendToWeb).start();
                         //new Thread(WriteToDB).start();
                         //new Thread(CheckPowerOffEvent).start();
