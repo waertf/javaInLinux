@@ -199,7 +199,10 @@ public class TcpServer {
                             if(bitSet.get(i-timeBaseLoc))
                                 yy |= (1 << i-pointer);
                     }
-                    time.append("20" + String.valueOf(yy));
+                    if(yy<10)
+                        time.append("200" + String.valueOf(yy));
+                    else
+                        time.append("20" + String.valueOf(yy));
                     pointer+=YEAR_LENGTH;
 
                     for (int i=pointer;i<pointer+MONTH_LENGTH;i++)
@@ -207,7 +210,10 @@ public class TcpServer {
                         if(bitSet.get(i-timeBaseLoc))
                             MM |= (1 << i-pointer);
                     }
-                    time.append(String.valueOf(MM));
+                    if(MM<10)
+                        time.append("0"+String.valueOf(MM));
+                    else
+                        time.append(String.valueOf(MM));
                     pointer+=MONTH_LENGTH;
 
                     for (int i=pointer;i<pointer+DAY_LENGTH;i++)
@@ -215,7 +221,10 @@ public class TcpServer {
                         if(bitSet.get(i-timeBaseLoc))
                             dd |= (1 << i-pointer);
                     }
-                    time.append(String.valueOf(dd));
+                    if(dd<10)
+                        time.append("0"+String.valueOf(dd));
+                    else
+                        time.append(String.valueOf(dd));
                     pointer+=DAY_LENGTH;
 
                     for (int i=pointer;i<pointer+HOUR_LENGTH;i++)
@@ -223,7 +232,10 @@ public class TcpServer {
                         if(bitSet.get(i-timeBaseLoc))
                             HH |= (1 << i-pointer);
                     }
-                    time.append(String.valueOf(HH));
+                    if(HH<10)
+                        time.append("0"+String.valueOf(HH));
+                    else
+                        time.append(String.valueOf(HH));
                     pointer+=HOUR_LENGTH;
 
                     for (int i=pointer;i<pointer+MINUTE_LENGTH;i++)
@@ -231,7 +243,10 @@ public class TcpServer {
                         if(bitSet.get(i-timeBaseLoc))
                             mm |= (1 << i-pointer);
                     }
-                    time.append(String.valueOf(mm));
+                    if(mm<10)
+                        time.append("0"+String.valueOf(mm));
+                    else
+                        time.append(String.valueOf(mm));
                     pointer+=MINUTE_LENGTH;
 
                     for (int i=pointer;i<pointer+SECOND_LENGTH;i++)
@@ -239,7 +254,10 @@ public class TcpServer {
                         if(bitSet.get(i-timeBaseLoc))
                             ss |= (1 << i-pointer);
                     }
-                    time.append(String.valueOf(ss));
+                    if(ss<10)
+                        time.append("0"+String.valueOf(ss));
+                    else
+                        time.append(String.valueOf(ss));
                     sb.append(time.toString()).append(",");
                     pointer+=SECOND_LENGTH;
                     //System.out.println(time.toString());
