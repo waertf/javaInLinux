@@ -298,7 +298,7 @@ public class TcpServer {
                             sb.append(String.valueOf(engineCoolantTemperature)).append(",");
                             sb.append(String.valueOf(fuelPressure)).append(",");
                             sb.append(String.valueOf(intakeManifoldPressure)).append(",");
-                            sb.append(String.valueOf(RPM)).append(",");
+                            sb.append(Integer.toUnsignedString(RPM)).append(",");
                             sb.append(String.valueOf(vehicleSpeed)).append(",");
                             sb.append(String.valueOf(intakeAirTemperature)).append(",");
                             sb.append(String.valueOf(airFlowRate)).append(",");
