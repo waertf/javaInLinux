@@ -37,7 +37,8 @@ public class TcpServer {
 
     static Channel channel = null;
     private static final String severity = "alonso";
-    static Object mutex=new Object();
+    //static Object mutex=new Object();
+    static Connection MQConnection = null;
     public static void main(String[] args) {
 
         BitSet bitset1 = BitSet.valueOf(new byte[]{1,2,3});
@@ -46,26 +47,16 @@ public class TcpServer {
         factory.setHost(MQ_IP_ADDRESS);
 
         factory.setAutomaticRecoveryEnabled(true);
-        // connection that will recover automatically
+        // MQConnection that will recover automatically
         factory.setNetworkRecoveryInterval(10000);
-        Connection connection = null;
+        //Connection MQConnection = null;
         try {
-            connection = factory.newConnection();
+            MQConnection = factory.newConnection();
         } catch (IOException e) {
             e.printStackTrace();
         }
         //Channel channel = null;
-        try {
-            channel = connection.createChannel();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        try {
-            channel.exchangeDeclare(MQ_EXCHANGE_NAME, "fanout");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         // print the sets
         //System.out.println("Bitset1:" + bitset1);
@@ -86,13 +77,24 @@ public class TcpServer {
 
     private static class CarMsgTask implements Callable<Void> {
         private Socket connection;
-
+        static Object mutex=new Object();
         CarMsgTask(Socket connection) {
             this. connection = connection;
         }
         @Override
         public Void call() throws InterruptedException {
             try {
+                try {
+                    channel = MQConnection.createChannel();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    channel.exchangeDeclare(MQ_EXCHANGE_NAME, "fanout");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 /*
                 DataInputStream in = new DataInputStream(connection.getInputStream());
                 int length=in.readUnsignedShort();
@@ -103,15 +105,7 @@ public class TcpServer {
                 */
                 InputStream in = connection.getInputStream();
                 byte[] length = new byte[2];
-                in.read(length);
-                //System.out.print("length[0]:");
-                //System.out.print(length[0] & 0xff);
-                //System.out.print("  length[1]:");
-                //System.out.print(length[1] & 0xff);
-                int dataLength = ((length[1] & 0xff) << 8) | (length[0] & 0xff);
-                int pointer=0;
-                byte[] data = new byte[dataLength];
-                in.read(data);
+
 
                 //System.out.println("dataLength:"+String.valueOf(dataLength));
                 //System.out.println("data:  ");
@@ -152,6 +146,16 @@ public class TcpServer {
                 */
                 while (true)
                 {
+                    in.read(length);
+                    //System.out.print("length[0]:");
+                    //System.out.print(length[0] & 0xff);
+                    //System.out.print("  length[1]:");
+                    //System.out.print(length[1] & 0xff);
+                    int dataLength = ((length[1] & 0xff) << 8) | (length[0] & 0xff);
+                    int pointer=0;
+                    byte[] data = new byte[dataLength];
+                    in.read(data);
+
                     //System.out.println("pointer=" + pointer);
                     for(int j=pointer;j<pointer+UID_LENGTH;j++)
                     {
@@ -471,7 +475,7 @@ public class TcpServer {
                         
                         //System.out.println(ReceiveMsg);
                         sb.setLength(0);
-                        break;
+                        //break;
                     }
                 }
                 /*
