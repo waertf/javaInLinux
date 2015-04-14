@@ -35,7 +35,7 @@ public class TcpServer {
 
     public static String ReceiveMsg;
 
-    static Channel channel = null;
+    //static Channel channel = null;
     private static final String severity = "alonso";
     //static Object mutex=new Object();
     static Connection MQConnection = null;
@@ -82,8 +82,10 @@ public class TcpServer {
             this. connection = connection;
         }
         @Override
-        public Void call() throws InterruptedException {
+        public Void call() throws InterruptedException, IOException {
+            Channel channel = null;
             try {
+
                 try {
                     channel = MQConnection.createChannel();
                 } catch (IOException e) {
@@ -106,6 +108,15 @@ public class TcpServer {
                 InputStream in = connection.getInputStream();
                 byte[] length = new byte[2];
 
+                in.read(length);
+                //System.out.print("length[0]:");
+                //System.out.print(length[0] & 0xff);
+                //System.out.print("  length[1]:");
+                //System.out.print(length[1] & 0xff);
+                int dataLength = ((length[1] & 0xff) << 8) | (length[0] & 0xff);
+                int pointer=0;
+                byte[] data = new byte[dataLength];
+                in.read(data);
 
                 //System.out.println("dataLength:"+String.valueOf(dataLength));
                 //System.out.println("data:  ");
@@ -146,15 +157,7 @@ public class TcpServer {
                 */
                 while (true)
                 {
-                    in.read(length);
-                    //System.out.print("length[0]:");
-                    //System.out.print(length[0] & 0xff);
-                    //System.out.print("  length[1]:");
-                    //System.out.print(length[1] & 0xff);
-                    int dataLength = ((length[1] & 0xff) << 8) | (length[0] & 0xff);
-                    int pointer=0;
-                    byte[] data = new byte[dataLength];
-                    in.read(data);
+
 
                     //System.out.println("pointer=" + pointer);
                     for(int j=pointer;j<pointer+UID_LENGTH;j++)
@@ -412,7 +415,7 @@ public class TcpServer {
 
                         String MQDataSend=null;
                         ReceiveMsg=sb.toString();
-                        //System.out.println(ReceiveMsg);
+                        System.out.println(ReceiveMsg);
 
                         String[] mysplit=ReceiveMsg.replace(System.getProperty("line.separator"),"").split(";");
                         for(int i=mysplit.length-1;i>=0;i--)
@@ -422,18 +425,19 @@ public class TcpServer {
                             if(myrow[1].compareTo("11")==0)
                             {
                                 MQDataSend=mysplit[i];
-                                System.out.println(MQDataSend);
+                                //System.out.println(MQDataSend);
                                 break;
                             }
                         }
                         final String finalMQDataSend = MQDataSend;
+                        final Channel finalChannel = channel;
                         Runnable WriteToMQ = () -> {
                             try {
                                 synchronized (mutex)
                                 {
                                     //channel.basicPublish(MQ_EXCHANGE_NAME, severity, MessageProperties.PERSISTENT_TEXT_PLAIN, ReceiveMsg.getBytes());
                                     if(finalMQDataSend !=null)
-                                    channel.basicPublish(MQ_EXCHANGE_NAME, severity, MessageProperties.PERSISTENT_TEXT_PLAIN, finalMQDataSend.getBytes());
+                                    finalChannel.basicPublish(MQ_EXCHANGE_NAME, severity, MessageProperties.PERSISTENT_TEXT_PLAIN, finalMQDataSend.getBytes());
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -472,10 +476,22 @@ public class TcpServer {
                         //new Thread(SendToWeb).start();
                         //new Thread(WriteToDB).start();
                         //new Thread(CheckPowerOffEvent).start();
-                        
+
+                        in.read(length);
+                        //System.out.print("length[0]:");
+                        //System.out.print(length[0] & 0xff);
+                        //System.out.print("  length[1]:");
+                        //System.out.print(length[1] & 0xff);
+                        dataLength = ((length[1] & 0xff) << 8) | (length[0] & 0xff);
+                        pointer=0;
+                        data = new byte[dataLength];
+                        in.read(data);
+
                         //System.out.println(ReceiveMsg);
                         sb.setLength(0);
                         //break;
+
+
                     }
                 }
                 /*
@@ -492,6 +508,7 @@ public class TcpServer {
                 //System.out.print("\n");
             } catch (IOException ex) {
                 System. err. println(ex);
+                channel.close();
             } finally {
                 try {
                     connection. close();
