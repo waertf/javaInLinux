@@ -30,8 +30,8 @@ public class TcpServer {
     public final static byte LAT_LENGTH=3;
     public final static byte VIDEO_FILENAME_LENGTH=20;
 
-    private static final String MQ_EXCHANGE_NAME = "alonso.fanout.test_20150402092434";
-    private static final String MQ_IP_ADDRESS="192.168.1.133";
+    private static final String MQ_EXCHANGE_NAME = "alonso.direct.test_20150402092434";
+    private static final String MQ_IP_ADDRESS="192.168.1.134";
 
     public static String ReceiveMsg;
 
@@ -93,7 +93,7 @@ public class TcpServer {
                 }
 
                 try {
-                    channel.exchangeDeclare(MQ_EXCHANGE_NAME, "fanout");
+                    channel.exchangeDeclare(MQ_EXCHANGE_NAME, "direct");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
