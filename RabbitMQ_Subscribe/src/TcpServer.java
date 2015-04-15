@@ -422,7 +422,7 @@ public class TcpServer {
                         {
                             String[] myrow= mysplit[i].split(",");
                             if(myrow.length>1)
-                            if(myrow[1].compareTo("11")==0)
+                            if(myrow[1].compareTo("11")==0 || myrow[1].compareTo("12")==0)
                             {
                                 MQDataSend=mysplit[i];
                                 System.out.println(MQDataSend);
