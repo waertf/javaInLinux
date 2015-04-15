@@ -16,7 +16,7 @@ import java.util.concurrent.*;
 public class TcpServer {
     public final static int PORT = 2999;
 
-    public final static byte UID_LENGTH=8;
+    public final static byte UID_LENGTH=20;
     public final static byte STATUS_LENGTH=1;
     public final static byte TOTAL_DISTANCE_LENGTH=6;
     public final static byte TIME_LENGTH=4;
@@ -28,7 +28,7 @@ public class TcpServer {
     public final static byte SECOND_LENGTH=6;
     public final static byte LONG_LENGTH=3;
     public final static byte LAT_LENGTH=3;
-    public final static byte VIDEO_FILENAME_LENGTH=20;
+    public final static byte VIDEO_FILENAME_LENGTH=32;
 
     private static final String MQ_EXCHANGE_NAME = "alonso.direct.test_20150402092434";
     private static final String MQ_IP_ADDRESS="192.168.1.134";
@@ -415,7 +415,7 @@ public class TcpServer {
 
                         String MQDataSend=null;
                         ReceiveMsg=sb.toString();
-                        //System.out.println(ReceiveMsg);
+                        System.out.println(ReceiveMsg);
 
                         String[] mysplit=ReceiveMsg.replace(System.getProperty("line.separator"),"").split(";");
                         for(int i=mysplit.length-1;i>=0;i--)
