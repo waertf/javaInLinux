@@ -415,7 +415,7 @@ public class TcpServer {
 
                         String MQDataSend=null;
                         ReceiveMsg=sb.toString();
-                        System.out.println(ReceiveMsg);
+                        //System.out.println(ReceiveMsg);
 
                         String[] mysplit=ReceiveMsg.replace(System.getProperty("line.separator"),"").split(";");
                         for(int i=mysplit.length-1;i>=0;i--)
@@ -425,7 +425,7 @@ public class TcpServer {
                             if(myrow[1].compareTo("11")==0)
                             {
                                 MQDataSend=mysplit[i];
-                                //System.out.println(MQDataSend);
+                                System.out.println(MQDataSend);
                                 break;
                             }
                         }
