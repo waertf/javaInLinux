@@ -18,7 +18,7 @@ public class TcpServer {
 
     public final static byte UID_LENGTH=20;
     public final static byte STATUS_LENGTH=1;
-    public final static byte TOTAL_DISTANCE_LENGTH=6;
+    public final static byte TOTAL_DISTANCE_LENGTH=8;
     public final static byte TIME_LENGTH=4;
     public final static byte YEAR_LENGTH=6;
     public final static byte MONTH_LENGTH=4;
@@ -31,7 +31,7 @@ public class TcpServer {
     public final static byte VIDEO_FILENAME_LENGTH=32;
 
     private static final String MQ_EXCHANGE_NAME = "alonso.direct.test_20150402092434";
-    private static final String MQ_IP_ADDRESS="192.168.1.134";
+    private static final String MQ_IP_ADDRESS="192.168.1.133";
 
     public static String ReceiveMsg;
 
@@ -425,7 +425,7 @@ public class TcpServer {
                             if(myrow[1].compareTo("11")==0 || myrow[1].compareTo("12")==0)
                             {
                                 MQDataSend=mysplit[i];
-                                System.out.println(MQDataSend);
+                                System.out.println("write to MQ:"+MQDataSend);
                                 break;
                             }
                         }
