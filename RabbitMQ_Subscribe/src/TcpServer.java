@@ -39,6 +39,7 @@ public class TcpServer {
     private static final String severity = "alonso";
     //static Object mutex=new Object();
     static Connection MQConnection = null;
+    static final boolean DEBUG=true;
     public static void main(String[] args) {
 
         BitSet bitset1 = BitSet.valueOf(new byte[]{1,2,3});
@@ -411,13 +412,17 @@ public class TcpServer {
                     //sb.append(System.getProperty("line.separator"));
                     sb.append(";");
                     if(pointer>=dataLength) {
-                        sb.append(System.getProperty("line.separator"));
+                        //sb.append(System.getProperty("line.separator"));
 
                         String MQDataSend=null;
                         ReceiveMsg=sb.toString();
-                        System.out.println(ReceiveMsg);
+                        if(DEBUG)
+                            System.out.println(ReceiveMsg);
 
-                        String[] mysplit=ReceiveMsg.replace(System.getProperty("line.separator"),"").split(";");
+                        //String[] mysplit=ReceiveMsg.replace(System.getProperty("line.separator"),"").split(";");
+                        String[] mysplit=ReceiveMsg.split(";");
+                        if(DEBUG && false)
+                            System.out.println(mysplit.length);
                         for(int i=mysplit.length-1;i>=0;i--)
                         {
                             String[] myrow= mysplit[i].split(",");
@@ -425,7 +430,7 @@ public class TcpServer {
                             if(myrow[1].compareTo("11")==0 || myrow[1].compareTo("12")==0)
                             {
                                 MQDataSend=mysplit[i];
-                                System.out.println("write to MQ:"+MQDataSend);
+                                //System.out.println("write to MQ:"+MQDataSend);
                                 break;
                             }
                         }
@@ -436,8 +441,12 @@ public class TcpServer {
                                 synchronized (mutex)
                                 {
                                     //channel.basicPublish(MQ_EXCHANGE_NAME, severity, MessageProperties.PERSISTENT_TEXT_PLAIN, ReceiveMsg.getBytes());
-                                    if(finalMQDataSend !=null)
-                                    finalChannel.basicPublish(MQ_EXCHANGE_NAME, severity, MessageProperties.PERSISTENT_TEXT_PLAIN, finalMQDataSend.getBytes());
+                                    if(finalMQDataSend !=null) {
+                                        finalChannel.basicPublish(MQ_EXCHANGE_NAME, severity, MessageProperties.PERSISTENT_TEXT_PLAIN, finalMQDataSend.getBytes());
+                                        if(DEBUG)
+                                            System.out.println("write to MQ:" + finalMQDataSend);
+                                    }
+
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
